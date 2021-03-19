@@ -1,13 +1,20 @@
 import React from 'react';
+import { IPokemon } from './';
+// import styled from 'styled-components';
 
+
+// const StyledLi = styled.li
 interface CardProps {
-  name: string;
+  pokemon: IPokemon
+  index: number;
 }
 
-export function Card({name}: CardProps) {
+export function Card({pokemon: {name, height}, index}: CardProps) {
   return (
-    <li>
+    <li
+      key={index}>
       {name}
+      <span>{height}</span>
     </li>
   )
-}
+};
