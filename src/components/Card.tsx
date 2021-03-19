@@ -12,9 +12,16 @@ interface CardProps {
 export function Card({pokemon: {name, height}, index}: CardProps) {
   return (
     <li
+      style={{
+        listStyleType: 'none',
+        textAlign: 'start',
+        border: '1px solid',
+        padding: '15px',
+        margin: '5px'
+      }}
       key={index}>
       {name}
-      <span>{height}</span>
+      <span>: {height} in.</span>
     </li>
   )
 };

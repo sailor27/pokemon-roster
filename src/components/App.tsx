@@ -28,7 +28,7 @@ function App() {
     } else {
       setFilteredList(pokemonList);
     }
-  }, [ heightInput ]);
+  }, [heightInput, pokemonList]);
 
   
   async function loadPokemon (length: number): Promise<void> {
@@ -51,7 +51,7 @@ function App() {
       const promises: Promise<AxiosResponse>[] = urls.map((url: string) => axios.get(url));
 
       const newResponseData: AxiosResponse[] = await Promise.all(promises);
-      const completePokemon: any = newResponseData.map((r: AxiosResponse) => r.data);
+      const completePokemon: IPokemon[] = newResponseData.map((r: AxiosResponse) => r.data);
       setFilteredList(completePokemon);    
       setPokemonList(completePokemon);    
 
@@ -63,7 +63,7 @@ function App() {
     <div className="App">
       <header className="App-header">
         <h1>Poke Roster 💛💙💚💜</h1>
-        <fieldset style={{
+<        fieldset style={{
           display: 'flex',
           flexFlow: 'column nowrap',
           border: 'none'
@@ -75,6 +75,9 @@ function App() {
             alt='height-input'
           />
         </fieldset>
+      </header>
+      <p>displaying {filteredList.length} pokemon</p>
+      <ul>
         {filteredList.map((p: IPokemon, i: number) => (
           <Card
             key={i}
@@ -82,7 +85,7 @@ function App() {
             index={i}
           />
         ))}
-      </header>
+      </ul>
     </div>
   );
 }
