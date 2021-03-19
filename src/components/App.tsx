@@ -31,6 +31,10 @@ export interface IPokemon {
   url: string;
   height: number;
   abilities: IAbility[];
+  sprites: {
+    front_default: string;
+    front_shiny?: string;
+  }
 }
 
 function App() {
@@ -121,6 +125,7 @@ function App() {
     <div className="App">
       <header className="App-header">
         <h1>Poke Roster 💛💚💜</h1>
+        <h4>Find pokemon by height and ability</h4>
           <StyledFieldSet>
             <label>height</label>
             <input

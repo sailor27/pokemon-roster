@@ -22,18 +22,31 @@ const FlexArea = styled.div`
     margin: 0;
   }
 `;
+
+const ImageArea = styled.div<{src: string, shiny?: string}>`
+  background-image: ${(props) => `url(${props.src})`};
+  width: 100px;
+  height: 100px;
+  &:hover {
+    background-image: ${(props) => props.shiny ? `url(${props.shiny})`: `url(${props.src})`};
+  }
+`;
 interface CardProps {
   pokemon: IPokemon
   index: number;
 }
 
-export function Card({ pokemon: { name, height, abilities }, index }: CardProps) {
+export function Card({ pokemon: { name, height, abilities, sprites }, index }: CardProps) {
   return (
     <StyledLi
       key={index}>
       <FlexArea>
        <h3>{name}</h3>
         <p>height: {height} in.</p>
+        <ImageArea
+          src={sprites.front_default}
+          shiny={sprites.front_shiny}
+        />
       </FlexArea>
       <FlexArea>
         <ul>
