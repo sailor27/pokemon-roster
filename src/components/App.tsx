@@ -1,19 +1,44 @@
-import React, { useState, useEffect } from 'react';
-import axios, { AxiosResponse } from 'axios';
-import './App.css';
+import React, { useState, useEffect, MouseEvent, ChangeEvent } from 'react';
 import { Card } from './';
+import axios, { AxiosResponse } from 'axios';
+import styled from 'styled-components';
+import './App.css';
 
+const StyledUl = styled.ul`
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  max-width: 650px;
+`;
+const StyledFieldSet = styled.fieldset`
+  display: flex;
+  flex-flow: column nowrap;
+  border: none;
+`;
+export interface IAbility {
+  ability: {
+    name: string;
+    url: string;
+  };
+  is_hidden: boolean;
+  slot: number;
+}
 export interface IPokemon {
   name: string;
   id: number;
   url: string;
   height: number;
+  abilities: IAbility[];
 }
 
 function App() {
   const [pokemonList, setPokemonList] = useState<IPokemon[]>([]);
   const [filteredList, setFilteredList] = useState<IPokemon[]>([]);
   const [heightInput, setHeightInput] = useState<number | string>('');
+  const [abilityInput, setAbilityInput] = useState<string>('');
+  const [query, setQuery] = useState<string>('');
 
   const apiUrl: string = 'https://pokeapi.co/api/v2/pokemon';
 
@@ -29,6 +54,11 @@ function App() {
       setFilteredList(pokemonList);
     }
   }, [heightInput, pokemonList]);
+
+  useEffect(() => {
+    const newList: IPokemon[] = Array.from(pokemonList);
+    if (!!query && newList.length) setFilteredList(filterByAbility(query, newList));
+  }, [query]);
 
   
   async function loadPokemon (length: number): Promise<void> {
@@ -59,25 +89,73 @@ function App() {
       console.error(err)
     }
   }
+
+  function filterByAbility(query: string, list: IPokemon[]) {
+    const formattedQueryString: string = query.trim().replace(' ', '-');
+    return filteredList
+      .filter((p: IPokemon) => p.abilities
+        .some(a => a.ability.name === formattedQueryString));
+  };
+
+  function handleSearchClick(e: MouseEvent<HTMLButtonElement>) {
+    setQuery(abilityInput);
+    setAbilityInput('');
+  }
+
+  function handleAbilityInput(e: ChangeEvent<HTMLInputElement>) {
+    setAbilityInput(e.target.value);
+  }
+
+  function handleHeightInput(e: ChangeEvent<HTMLInputElement>) {
+    setHeightInput(e.target.value)
+  }
+
+  function handleClear(e: MouseEvent<HTMLButtonElement>) {
+    setQuery('');
+    setAbilityInput('');
+    setHeightInput('');
+    setFilteredList(pokemonList);
+  };
+
   return (
     <div className="App">
       <header className="App-header">
-        <h1>Poke Roster 💛💙💚💜</h1>
-<        fieldset style={{
-          display: 'flex',
-          flexFlow: 'column nowrap',
-          border: 'none'
-        }}>
-          <label>height</label>
-          <input
-            onChange={(e: any) => setHeightInput(e.target.value)}
-            type='number'
-            alt='height-input'
-          />
-        </fieldset>
+        <h1>Poke Roster 💛💚💜</h1>
+          <StyledFieldSet>
+            <label>height</label>
+            <input
+              onChange={handleHeightInput}
+              type='number'
+              alt='height-input'
+              value={heightInput}
+            />
+          </StyledFieldSet>
+          <StyledFieldSet>
+            <label>ability</label>
+            <input
+              onChange={handleAbilityInput}
+              type='string'
+              alt='ability-input'
+              value={abilityInput}
+            />
+            </StyledFieldSet>
+          <StyledFieldSet>
+            <button
+              onClick={handleSearchClick}
+              aria-label='query-ability'
+            >
+              search
+            </button>
+            <button
+              onClick={handleClear}
+              aria-label='clear-filters'
+            >
+              clear
+            </button>
+          </StyledFieldSet>
       </header>
       <p>displaying {filteredList.length} pokemon</p>
-      <ul>
+      <StyledUl>
         {filteredList.map((p: IPokemon, i: number) => (
           <Card
             key={i}
@@ -85,7 +163,7 @@ function App() {
             index={i}
           />
         ))}
-      </ul>
+      </StyledUl>
     </div>
   );
 }

@@ -1,27 +1,50 @@
 import React from 'react';
-import { IPokemon } from './';
-// import styled from 'styled-components';
+import { IPokemon, IAbility } from './';
+import styled from 'styled-components';
 
 
-// const StyledLi = styled.li
+const StyledLi = styled.li`
+  text-align: start;
+  list-style-type: none;
+  border: 1px solid;
+  padding: 15px;
+  margin-bottom: 8px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  width: 90%;
+`;
+
+const FlexArea = styled.div`
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content:center;
+  p, h3 {
+    margin: 0;
+  }
+`;
 interface CardProps {
   pokemon: IPokemon
   index: number;
 }
 
-export function Card({pokemon: {name, height}, index}: CardProps) {
+export function Card({ pokemon: { name, height, abilities }, index }: CardProps) {
   return (
-    <li
-      style={{
-        listStyleType: 'none',
-        textAlign: 'start',
-        border: '1px solid',
-        padding: '15px',
-        margin: '5px'
-      }}
+    <StyledLi
       key={index}>
-      {name}
-      <span>: {height} in.</span>
-    </li>
+      <FlexArea>
+       <h3>{name}</h3>
+        <p>height: {height} in.</p>
+      </FlexArea>
+      <FlexArea>
+        <ul>
+          {abilities
+            .map((a: IAbility, i: number) =>
+            <li key={i}>
+              {a.ability.name.replace('-', ' ')} 
+            </li>
+          )}
+        </ul>
+      </FlexArea>
+    </StyledLi>
   )
 };
